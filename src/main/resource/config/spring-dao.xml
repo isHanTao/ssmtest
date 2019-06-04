@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        ">
+
+    <!-- 加载JDBC配置文件，供后面连接池使用 -->
+    <context:property-placeholder location="classpath:properties/database.properties,classpath:properties/redis.properties"/>
+    <!--&lt;!&ndash; DBCP数据库连接池 &ndash;&gt;-->
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">-->
+        <!--<property name="driverClassName" value="${jdbc.driver}"/>-->
+        <!--<property name="url" value="${jdbc.url}"/>-->
+        <!--<property name="username" value="${jdbc.user}"/>-->
+        <!--<property name="password" value="${jdbc.password}"/>-->
+        <!--&lt;!&ndash; 初始连接数 &ndash;&gt;-->
+        <!--<property name="initialSize" value="${jdbc.initialSize}"/>-->
+        <!--&lt;!&ndash; 最大活动连接数,设置为负值不限制 &ndash;&gt;-->
+        <!--<property name="maxTotal" value="${jdbc.maxTotal}"/>-->
+        <!--&lt;!&ndash; 最大空闲连接数,设置负值不限制 &ndash;&gt;-->
+        <!--<property name="maxIdle" value="${jdbc.maxIdle}"/>-->
+        <!--&lt;!&ndash; 最小空闲连接数(生效的前提是timeBetweenEvictionRunsMillis为正数) &ndash;&gt;-->
+        <!--<property name="minIdle" value="${jdbc.minIdle}"/>-->
+        <!--&lt;!&ndash; 从池中取连接时最大等待时间，超过设置的时间将抛出异常。设置为-1表示无限等待&ndash;&gt;-->
+        <!--<property name="maxWaitMillis" value="${jdbc.maxWaitMillis}"/>-->
+        <!--&lt;!&ndash; 空闲对象驱逐线程运行时的休眠毫秒数(可能就是空闲的连接多久被关闭吧) &ndash;&gt;-->
+        <!--<property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>-->
+    <!--</bean>-->
+
+    <!--druid数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+    <property name="url" value="${jdbc.url}" />
+    <property name="username" value="${jdbc.user}" />
+    <property name="password" value="${jdbc.password}" />
+    <property name="driverClassName" value="${jdbc.driver}" />
+    <property name="maxActive" value="10" />
+    <property name="minIdle" value="5" />
+    </bean>
+    <!-- 创建mybatis的上下文对象  -->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+        <property name="dataSource" ref="dataSource"/>
+        <!--mapper 文件的位置-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml" />
+        <property name="configLocation" value="classpath:config/mybatis.xml"/>
+    </bean>
+    <!--配置dao层扫描的包的位置-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hant.dao"/>
+    </bean>
+
+
+</beans>

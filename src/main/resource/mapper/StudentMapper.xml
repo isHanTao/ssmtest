@@ -1,0 +1,10 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hant.dao.StudentDao">
+
+    <select id="getStudentById" resultType="com.hant.bean.Student">
+        select * from students where id = #{id};
+    </select>
+</mapper>
